@@ -1,0 +1,9 @@
+{
+  "name": "Demo Dockview App",
+  "short_name": "Dockview",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "description": "Vite + React 19 Dockview Example",
+  "icons": []
+}
