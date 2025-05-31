@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import * as ReactDOMClient from 'react-dom/client';
-import './styles.css';
-import 'dockview/dist/styles/dockview.css';
+import "./styles/index.scss";
+import "./styles/index.css";
 
 import App from './App';
 
@@ -12,10 +12,7 @@ if (rootElement) {
 
     root.render(
         <StrictMode>
-            <div className="app">
-                Prout
-                <App />
-            </div>
+            <App />
         </StrictMode>
     );
 } else {

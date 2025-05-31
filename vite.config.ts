@@ -8,6 +8,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      '@dockview-theme': path.resolve(__dirname, 'node_modules/dockview/packages/dockview-core/src'),
     },
   },
 });

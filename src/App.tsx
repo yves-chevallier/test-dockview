@@ -3,13 +3,12 @@ import {
     DockviewReact,
     DockviewReadyEvent,
     IDockviewPanelHeaderProps,
-    IDockviewPanelProps,
     DockviewApi,
     DockviewTheme,
 } from 'dockview';
-import {MouseEvent, useRef, useEffect, useLayoutEffect, useState, createContext, useContext} from 'react';
-import * as ReactDOM from 'react-dom/client';
-import './app.scss';
+import {MouseEvent, useEffect, useLayoutEffect, useState, createContext} from 'react';
+
+import './styles/app.scss';
 import { defaultConfig } from './defaultLayout';
 import { RightControls } from './controls';
 import { LeftControls } from './components/LeftControls';
@@ -129,7 +128,8 @@ export default (props: { theme?: DockviewTheme }) => {
                     leftHeaderActionsComponent={LeftControls}
                     prefixHeaderActionsComponent={PrefixHeaderControls}
                     onReady={onReady}
-                    theme={props.theme}
+                    className="dockview-theme-app"
+                    disableThemeClassName={true}
                 />
             </ThemeContext.Provider>
         </div>
