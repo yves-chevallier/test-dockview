@@ -11,120 +11,11 @@ import {MouseEvent, useRef, useEffect, useLayoutEffect, useState, createContext,
 import * as ReactDOM from 'react-dom/client';
 import './app.scss';
 import { defaultConfig } from './defaultLayout';
-import { LeftControls, PrefixHeaderControls, RightControls } from './controls';
+import { RightControls } from './controls';
+import { LeftControls } from './components/LeftControls';
+import { PrefixHeaderControls } from './components/PrefixHeaderControls';
 
-const DebugContext = createContext<boolean>(false);
-
-const ShadowIframe = (props: IDockviewPanelProps) => {
-    return (
-        <iframe
-            onMouseDown={() => {
-                if (!props.api.isActive) {
-                    props.api.setActive();
-                }
-            }}
-            style={{ border: 'none', width: '100%', height: '100%' }}
-            src="https://dockview.dev"
-        />
-    );
-};
-
-const components = {
-    default: (props: IDockviewPanelProps) => {
-        const isDebug = useContext(DebugContext);
-
-        return (
-            <div
-                style={{
-                    height: '100%',
-                    overflow: 'auto',
-                    position: 'relative',
-                    padding: 5,
-                    border: isDebug ? '2px dashed orange' : '',
-                }}
-            >
-                <span
-                    style={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%,-50%)',
-                        pointerEvents: 'none',
-                        fontSize: '42px',
-                        opacity: 0.5,
-                    }}
-                >
-                    {props.api.title}
-                </span>
-            </div>
-        );
-    },
-    nested: (props: IDockviewPanelProps) => {
-        const theme = useContext(ThemeContext);
-        return (
-            <DockviewReact
-                components={components}
-                onReady={(event: DockviewReadyEvent) => {
-                    event.api.addPanel({ id: 'panel_1', component: 'default' });
-                    event.api.addPanel({ id: 'panel_2', component: 'default' });
-                    event.api.addPanel({
-                        id: 'panel_3',
-                        component: 'default',
-                    });
-
-                    event.api.onDidRemovePanel((e) => {
-                        console.log('remove', e);
-                    });
-                }}
-                theme={theme}
-            />
-        );
-    },
-    iframe: (props: IDockviewPanelProps) => {
-        return (
-            <iframe
-                onMouseDown={() => {
-                    if (!props.api.isActive) {
-                        props.api.setActive();
-                    }
-                }}
-                style={{
-                    border: 'none',
-                    width: '100%',
-                    height: '100%',
-                }}
-                src="https://dockview.dev"
-            />
-        );
-    },
-    shadowDom: (props: IDockviewPanelProps) => {
-        const ref = useRef<HTMLDivElement>(null);
-
-        useEffect(() => {
-            if (!ref.current) {
-                return;
-            }
-
-            const shadow = ref.current.attachShadow({
-                mode: 'open',
-            });
-
-            const shadowRoot = document.createElement('div');
-            shadowRoot.style.height = '100%';
-            shadow.appendChild(shadowRoot);
-
-            const root = ReactDOM.createRoot(shadowRoot);
-
-            root.render(<ShadowIframe {...props} />);
-
-            return () => {
-                root.unmount();
-            };
-        }, []);
-
-        return <div style={{ height: '100%' }} ref={ref}></div>;
-    },
-};
+import DefaultPanel from './components/DefaultPanel';
 
 const headerComponents = {
     default: (props: IDockviewPanelHeaderProps) => {
@@ -213,6 +104,10 @@ export default (props: { theme?: DockviewTheme }) => {
 
     const onReady = (event: DockviewReadyEvent) => {
         setApi(event.api);
+    };
+
+    const components = {
+        default: DefaultPanel,
     };
 
     return (
