@@ -3,7 +3,7 @@ import * as ReactDOMClient from 'react-dom/client';
 import './styles.css';
 import 'dockview/dist/styles/dockview.css';
 
-import App from './app';
+import App from './App';
 
 const rootElement = document.getElementById('root');
 
@@ -13,8 +13,11 @@ if (rootElement) {
     root.render(
         <StrictMode>
             <div className="app">
+                Prout
                 <App />
             </div>
         </StrictMode>
     );
+} else {
+    console.error('Root element not found');
 }
