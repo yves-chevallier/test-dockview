@@ -11,9 +11,7 @@ export function defaultConfig(api: DockviewApi) {
         component: 'BarChart',
         renderer: 'always',
         title: 'Panel 1',
-        // floating: true
     });
-
 
     api.addPanel({
         id: 'panel_4',

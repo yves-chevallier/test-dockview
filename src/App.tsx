@@ -96,33 +96,6 @@ const CustomTab2: React.FunctionComponent<IDockviewDefaultTabProps> = (props) =>
     );
 };
 
-const CustomTab = (props: IDockviewPanelHeaderProps) => {
-    const widget = widgetRegistry.get(props.api.id);
-
-    if (!widget) {
-        return <DockviewDefaultTab {...props} />;
-    }
-
-    const Icon = widget.icon;
-
-    return (
-        <div className="flex items-center space-x-2 px-2">
-            <Icon size={14} />
-            <span>{widget.title}</span>
-        </div>
-    );
-};
-
-const headerComponents = {
-    default: (props: IDockviewPanelHeaderProps) => {
-        const onContextMenu = (event: MouseEvent) => {
-            event.preventDefault();
-            alert('context menu');
-        };
-        return <DockviewDefaultTab onContextMenu={onContextMenu} {...props} />;
-    },
-};
-
 const ThemeContext = createContext<DockviewTheme | undefined>(undefined);
 
 export default (props: { theme?: DockviewTheme }) => {
@@ -187,12 +160,6 @@ export default (props: { theme?: DockviewTheme }) => {
         setApi(event.api);
         (window as any).dockview = event.api;
     };
-
-    const components = {
-        default: DefaultPanel,
-    };
-
-
 
     return (
         <div

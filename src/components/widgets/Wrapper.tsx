@@ -1,13 +1,15 @@
 import * as React from 'react';
 import type { IWidgetDefinition } from './IWidgetDefinition';
 import useResizeObserver from '@react-hook/resize-observer';
+import type { IDockviewPanelProps } from 'dockview';
 
 interface WidgetWrapperProps {
     widget: IWidgetDefinition;
-    onOpenSettings?: (content: React.ReactNode) => void; // fourni par votre layout
+    onOpenSettings?: (content: React.ReactNode) => void;
+    dockviewProps: IDockviewPanelProps; //
 }
 
-export const WidgetWrapper: React.FC<WidgetWrapperProps> = ({ widget, onOpenSettings }) => {
+export const WidgetWrapper: React.FC<WidgetWrapperProps> = ({ widget, onOpenSettings, dockviewProps }) => {
     const ref = React.useRef<HTMLDivElement>(null);
     const { component: Component, mount, unmount } = widget;
     const [dimensions, setDimensions] = React.useState<{ width: number; height: number }>({
@@ -56,7 +58,7 @@ export const WidgetWrapper: React.FC<WidgetWrapperProps> = ({ widget, onOpenSett
                 )}
             </div>
             <div className="widget-content flex-1 overflow-auto">
-                <Component/>
+                <Component {...dockviewProps}/>
             </div>
         </div>
     );
