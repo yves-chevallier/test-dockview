@@ -4,8 +4,8 @@
 .dockview-theme-abyss {
     --dv-group-view-background-color: var(--card);
     --dv-tabs-and-actions-container-background-color: var(--sidebar);
-    --dv-activegroup-visiblepanel-tab-background-color: var(--card);
-    --dv-activegroup-hiddenpanel-tab-background-color: var(--sidebar-accent);
+    --dv-activegroup-visiblepanel-tab-background-color: var(--sidebar-secondary);
+    --dv-activegroup-hiddenpanel-tab-background-color: var(--card);
     --dv-inactivegroup-visiblepanel-tab-background-color: var(--card);
     --dv-inactivegroup-hiddenpanel-tab-background-color: var(--sidebar);
     --dv-tab-divider-color: var(--sidebar-border);

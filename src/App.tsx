@@ -4,17 +4,114 @@ import {
     DockviewReadyEvent,
     IDockviewPanelHeaderProps,
     DockviewApi,
+    IDockviewPanelProps,
+    IDockviewDefaultTabProps,
     DockviewTheme,
 } from 'dockview';
-import {MouseEvent, useEffect, useLayoutEffect, useState, createContext} from 'react';
+import { MouseEvent, useEffect, useLayoutEffect, PointerEvent, useRef, useCallback, useState, createContext } from 'react';
 
 import './styles/app.scss';
 import { defaultConfig } from './defaultLayout';
-import { RightControls } from './controls';
-import { LeftControls } from './components/LeftControls';
-import { PrefixHeaderControls } from './components/PrefixHeaderControls';
+
+import { RightControls, LeftControls, PrefixHeaderControls } from './components/controls';
+import { X } from 'lucide-react';
 
 import DefaultPanel from './components/DefaultPanel';
+
+import { widgetRegistry } from './components/widgets';
+
+const CustomTab2: React.FunctionComponent<IDockviewDefaultTabProps> = (props) => {
+    const isMiddleMouseButton = useRef<boolean>(false);
+    const widget = widgetRegistry.get(props.api.id);
+
+    if (!widget) {
+        return <DockviewDefaultTab {...props} />;
+    }
+
+    const Icon = widget.icon;
+    const onClose = useCallback(
+        (event: React.MouseEvent<HTMLSpanElement>) => {
+            event.preventDefault();
+
+            if (props.closeActionOverride) {
+                props.closeActionOverride();
+            } else {
+                props.api.close();
+            }
+        },
+        [props.api, props.closeActionOverride]
+    );
+
+    const onBtnPointerDown = useCallback((event: React.MouseEvent) => {
+        event.preventDefault();
+    }, []);
+
+    const _onPointerDown = useCallback(
+        (event: PointerEvent<HTMLDivElement>) => {
+            isMiddleMouseButton.current = event.button === 1;
+            props.onPointerDown?.(event);
+        },
+        [props.onPointerDown]
+    );
+
+    const _onPointerUp = useCallback(
+        (event: PointerEvent<HTMLDivElement>) => {
+            if (isMiddleMouseButton && event.button === 1 && !props.hideClose) {
+                isMiddleMouseButton.current = false;
+                onClose(event);
+            }
+
+            props.onPointerUp?.(event);
+        },
+        [props.onPointerUp, onClose, props.hideClose]
+    );
+
+    const _onPointerLeave = useCallback(
+        (event: PointerEvent<HTMLDivElement>) => {
+            isMiddleMouseButton.current = false;
+            props.onPointerLeave?.(event);
+        },
+        [props.onPointerLeave]
+    );
+
+    return (
+        <div
+            data-testid="dockview-dv-default-tab"
+            onPointerDown={_onPointerDown}
+            onPointerUp={_onPointerUp}
+            onPointerLeave={_onPointerLeave}
+            className="dv-default-tab"
+        >
+            <span className="dv-default-tab-content"><Icon size={14} className="" /> {widget.title}</span>
+            {!props.hideClose && props.tabLocation !== 'headerOverflow' && (
+                <div
+                    className="dv-default-tab-action"
+                    onPointerDown={onBtnPointerDown}
+                    onClick={onClose}
+                >
+                    <X />
+                </div>
+            )}
+        </div>
+    );
+};
+
+const CustomTab = (props: IDockviewPanelHeaderProps) => {
+    const widget = widgetRegistry.get(props.api.id);
+
+    if (!widget) {
+        return <DockviewDefaultTab {...props} />;
+    }
+
+    const Icon = widget.icon;
+
+    return (
+        <div className="flex items-center space-x-2 px-2">
+            <Icon size={14} />
+            <span>{widget.title}</span>
+        </div>
+    );
+};
 
 const headerComponents = {
     default: (props: IDockviewPanelHeaderProps) => {
@@ -34,65 +131,50 @@ export default (props: { theme?: DockviewTheme }) => {
         { text: string; timestamp?: Date }[]
     >([]);
 
+    const dockviewComponents: Record<string, React.FC<IDockviewPanelProps>> = {};
+    widgetRegistry.list().forEach(({ id, widget }) => {
+        dockviewComponents[id] = (props: IDockviewPanelProps) => {
+            const Component = widget.component;
+            return <Component {...props} />;
+        };
+    });
+
     useLayoutEffect(() => {
-        if (pending.length === 0) {
-            return;
-        }
+        if (pending.length === 0) return;
         setPending([]);
     }, [pending]);
 
     useEffect(() => {
-        if (!api) {
-            return;
-        }
+        if (!api) return;
 
         const disposables = [
             api.onDidAddPanel((event) => {
-                console.log(`Panel Added ${event.id}`);
-            }),
-            api.onDidActivePanelChange((event) => {
-                console.log(`Panel Activated ${event?.id}`);
+                widgetRegistry.get(event.id)?.mount?.();
             }),
             api.onDidRemovePanel((event) => {
-                console.log(`Panel Removed ${event.id}`);
-            }),
-
-            api.onDidAddGroup((event) => {
-                console.log(`Group Added ${event.id}`);
-            }),
-
-            api.onDidMovePanel((event) => {
-                console.log(`Panel Moved ${event.panel.id}`);
-            }),
-
-            api.onDidMaximizedGroupChange((event) => {
-                console.log(
-                    `Group Maximized Changed ${event.group.api.id} [${event.isMaximized}]`
-                );
-            }),
-
-            api.onDidRemoveGroup((event) => {
-                console.log(`Group Removed ${event.id}`);
-            }),
-
-            api.onDidActiveGroupChange((event) => {
-                console.log(`Group Activated ${event?.id}`);
+                widgetRegistry.get(event.id)?.unmount?.();
             }),
         ];
 
         (() => {
-            const state = localStorage.getItem('dv-demo-state');
+            // const state = localStorage.getItem('dv-demo-state');
 
-            if (state) {
-                try {
-                    api.fromJSON(JSON.parse(state));
-                    return;
-                } catch {
-                    localStorage.removeItem('dv-demo-state');
-                }
-                return;
+            // if (state) {
+            //     try {
+            //         api.fromJSON(JSON.parse(state));
+            //         return;
+            //     } catch {
+            //         localStorage.removeItem('dv-demo-state');
+            //     }
+            //     return;
+            // }
+            for (const widget of widgetRegistry.list()) {
+                api.addPanel({
+                    id: widget.id,
+                    component: widget.id,
+                    title: widget.widget.title,
+                });
             }
-
             defaultConfig(api);
         })();
 
@@ -103,11 +185,14 @@ export default (props: { theme?: DockviewTheme }) => {
 
     const onReady = (event: DockviewReadyEvent) => {
         setApi(event.api);
+        (window as any).dockview = event.api;
     };
 
     const components = {
         default: DefaultPanel,
     };
+
+
 
     return (
         <div
@@ -122,14 +207,15 @@ export default (props: { theme?: DockviewTheme }) => {
         >
             <ThemeContext.Provider value={props.theme}>
                 <DockviewReact
-                    components={components}
-                    defaultTabComponent={headerComponents.default}
+                    components={dockviewComponents}
+                    defaultTabComponent={CustomTab2}
                     rightHeaderActionsComponent={RightControls}
                     leftHeaderActionsComponent={LeftControls}
                     prefixHeaderActionsComponent={PrefixHeaderControls}
                     onReady={onReady}
                     className="dockview-theme-app"
                     disableThemeClassName={true}
+                    singleTabMode='default'
                 />
             </ThemeContext.Provider>
         </div>

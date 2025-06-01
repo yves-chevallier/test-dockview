@@ -1,5 +1,5 @@
 import { IDockviewHeaderActionsProps } from 'dockview';
-import { nextId } from '../defaultLayout';
+import { nextId } from '../../defaultLayout';
 import { Plus } from 'lucide-react';
 
 export const LeftControls = (props: IDockviewHeaderActionsProps) => {
@@ -22,7 +22,6 @@ export const LeftControls = (props: IDockviewHeaderActionsProps) => {
                 alignItems: 'center',
                 padding: '0px 8px',
                 height: '100%',
-                color: 'var(--dv-activegroup-visiblepanel-tab-color)',
             }}
         >
             <Plus size={15} strokeWidth={2} onClick={onClick} />
