@@ -1,29 +1,18 @@
 import { BarChart3 } from 'lucide-react';
-import { ChartContainer } from "@/components/ui/chart";
-import { BarChart, Bar } from "recharts";
 import { useEffect } from 'react';
-import type { IWidgetComponent } from '@/types/IWidgetComponent';
+import { ChartContainer } from '@/components/ui/chart';
+import { BarChart, Bar } from 'recharts';
 import type { IDockviewPanelProps } from 'dockview';
+import { defineWidget } from '@/utils/defineWidget';
 
-const StatisticsWidget: IWidgetComponent = (props: IDockviewPanelProps) => {
+const BarChartWidget: React.FC<IDockviewPanelProps> = () => {
   useEffect(() => {
     console.log('Monté');
     return () => console.log('Démonté');
   }, []);
 
-  const chartData = [
-    { month: "January", desktop: 186, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-    { month: "March", desktop: 237, mobile: 120 },
-    { month: "April", desktop: 73, mobile: 190 },
-    { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 214, mobile: 140 },
-  ];
-
-  const chartConfig = {
-    desktop: { label: "Desktop", color: "#2563eb" },
-    mobile: { label: "Mobile", color: "#60a5fa" },
-  };
+  const chartData = [/* ... */];
+  const chartConfig = { /* ... */ };
 
   return (
     <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
@@ -35,11 +24,10 @@ const StatisticsWidget: IWidgetComponent = (props: IDockviewPanelProps) => {
   );
 };
 
-// Métadonnées statiques typées
-StatisticsWidget.title = "Statistiques";
-StatisticsWidget.icon = BarChart3;
-StatisticsWidget.widthMin = 300;
-StatisticsWidget.heightMin = 200;
-StatisticsWidget.settings = () => <div>Réglages du widget</div>;
+// ✅ On attache les propriétés **avant** export
+BarChartWidget.title = 'Statistiques';
+BarChartWidget.icon = BarChart3;
+BarChartWidget.widthMin = 300;
+BarChartWidget.heightMin = 200;
 
-export default StatisticsWidget;
+export default defineWidget(BarChartWidget);
