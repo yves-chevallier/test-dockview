@@ -15,12 +15,7 @@ const BarChartWidget: React.FC<IDockviewPanelProps> = () => {
   const chartConfig = { /* ... */ };
 
   return (
-    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-      <BarChart accessibilityLayer data={chartData}>
-        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-        <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
-      </BarChart>
-    </ChartContainer>
+    <div>PROUT</div>
   );
 };
 

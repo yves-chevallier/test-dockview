@@ -107,7 +107,7 @@ export default (props: { theme?: DockviewTheme }) => {
     const dockviewComponents: Record<string, React.FC<IDockviewPanelProps>> = {};
     widgetRegistry.list().forEach(({ id, widget }) => {
         dockviewComponents[id] = (props: IDockviewPanelProps) => {
-            const Component = widget.component;
+            const Component = widget;
             return <Component {...props} />;
         };
     });
@@ -143,6 +143,7 @@ export default (props: { theme?: DockviewTheme }) => {
             // }
             console.log(widgetRegistry.list());
             for (const widget of widgetRegistry.list()) {
+                console.log('Adding panel', widget.id, widget.widget.title);
                 api.addPanel({
                     id: widget.id,
                     component: widget.id,

@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 import type { IWidgetDefinition } from './IWidgetDefinition';
-
+import { isValidElementType } from 'react-is';
 import type { IWidgetComponent } from '@/types/IWidgetComponent';
 
 const modules = import.meta.glob<IWidgetComponent>('./widgets/*.tsx', { eager: true });
@@ -52,7 +52,7 @@ Object.entries(modules).forEach(([path, mod]) => {
     if (
         typeof widget !== 'function' ||
         typeof widget.title !== 'string' ||
-        typeof widget.icon !== 'function' // LucideIcon est une fonction React
+        !isValidElementType(widget.icon)  // LucideIcon est une fonction React
     ) {
         console.warn(`Widget "${fileName}" invalide ou mal formé.`);
         return;
