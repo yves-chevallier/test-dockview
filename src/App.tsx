@@ -141,6 +141,7 @@ export default (props: { theme?: DockviewTheme }) => {
             //     }
             //     return;
             // }
+            console.log(widgetRegistry.list());
             for (const widget of widgetRegistry.list()) {
                 api.addPanel({
                     id: widget.id,
@@ -148,7 +149,7 @@ export default (props: { theme?: DockviewTheme }) => {
                     title: widget.widget.title,
                 });
             }
-            defaultConfig(api);
+            //defaultConfig(api);
         })();
 
         return () => {
