@@ -5,7 +5,12 @@ export default {
     "./src/**/*.{ts,tsx}", // adapter selon votre structure
   ],
   theme: {
-    extend: {},
+    extend: {
+        colors: {
+            success: 'var(--success)',
+            error: 'var(--destructive)',
+        },
+    },
   },
   plugins: [],
 };

@@ -20,81 +20,7 @@ import DefaultPanel from './components/DefaultPanel';
 
 import { widgetRegistry } from './components/widgets';
 
-const CustomTab2: React.FunctionComponent<IDockviewDefaultTabProps> = (props) => {
-    const isMiddleMouseButton = useRef<boolean>(false);
-    const widget = widgetRegistry.get(props.api.id);
-
-    if (!widget) {
-        return <DockviewDefaultTab {...props} />;
-    }
-
-    const Icon = widget.icon;
-    const onClose = useCallback(
-        (event: React.MouseEvent<HTMLSpanElement>) => {
-            event.preventDefault();
-
-            if (props.closeActionOverride) {
-                props.closeActionOverride();
-            } else {
-                props.api.close();
-            }
-        },
-        [props.api, props.closeActionOverride]
-    );
-
-    const onBtnPointerDown = useCallback((event: React.MouseEvent) => {
-        event.preventDefault();
-    }, []);
-
-    const _onPointerDown = useCallback(
-        (event: PointerEvent<HTMLDivElement>) => {
-            isMiddleMouseButton.current = event.button === 1;
-            props.onPointerDown?.(event);
-        },
-        [props.onPointerDown]
-    );
-
-    const _onPointerUp = useCallback(
-        (event: PointerEvent<HTMLDivElement>) => {
-            if (isMiddleMouseButton && event.button === 1 && !props.hideClose) {
-                isMiddleMouseButton.current = false;
-                onClose(event);
-            }
-
-            props.onPointerUp?.(event);
-        },
-        [props.onPointerUp, onClose, props.hideClose]
-    );
-
-    const _onPointerLeave = useCallback(
-        (event: PointerEvent<HTMLDivElement>) => {
-            isMiddleMouseButton.current = false;
-            props.onPointerLeave?.(event);
-        },
-        [props.onPointerLeave]
-    );
-
-    return (
-        <div
-            data-testid="dockview-dv-default-tab"
-            onPointerDown={_onPointerDown}
-            onPointerUp={_onPointerUp}
-            onPointerLeave={_onPointerLeave}
-            className="dv-default-tab"
-        >
-            <span className="dv-default-tab-content"><Icon size={14} className="" /> {widget.title}</span>
-            {!props.hideClose && props.tabLocation !== 'headerOverflow' && (
-                <div
-                    className="dv-default-tab-action"
-                    onPointerDown={onBtnPointerDown}
-                    onClick={onClose}
-                >
-                    <X />
-                </div>
-            )}
-        </div>
-    );
-};
+import { Tab} from './components/controls';
 
 const ThemeContext = createContext<DockviewTheme | undefined>(undefined);
 
@@ -177,7 +103,7 @@ export default (props: { theme?: DockviewTheme }) => {
             <ThemeContext.Provider value={props.theme}>
                 <DockviewReact
                     components={dockviewComponents}
-                    defaultTabComponent={CustomTab2}
+                    defaultTabComponent={Tab}
                     rightHeaderActionsComponent={RightControls}
                     leftHeaderActionsComponent={LeftControls}
                     prefixHeaderActionsComponent={PrefixHeaderControls}

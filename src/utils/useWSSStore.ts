@@ -1,41 +1,54 @@
 import { create } from 'zustand';
-import { wsManager } from './websocketManager';
+import { WebSocketManager, wsManager } from './websocketManager';
 
 type State = {
   connected: boolean;
   values: Record<number, any>;
   connect: () => void;
+  disconnect: () => void;
   subscribe: (...ids: number[]) => void;
   unsubscribe: (...ids: number[]) => void;
 };
 
-export const useWSStore = create<State>((set, get) => ({
-  connected: false,
-  values: {},
+export const useWSStore = create<State>((set, get) => {
+  let unsubscribeSdo: () => void;
 
-  connect: () => {
-    wsManager.connect('ws://localhost:8000/ws'); // Ajustez l'URL
-    wsManager.onMessage((msg) => {
-      if (msg.sdo) {
+  return {
+    connected: false,
+    values: {},
+
+    connect: () => {
+      wsManager.setStatusCallback((status) => {
+        set({ connected: status === 'open' });
+      });
+
+      wsManager.connect('ws://localhost:8000/ws');
+
+      unsubscribeSdo = wsManager.onMessage<Record<number, any>>('sdo', (payload) => {
         set((state) => ({
-          values: { ...state.values, ...msg.sdo },
+          values: { ...state.values, ...payload },
         }));
-      }
-      // Pour le PDO, à traiter selon format
-    });
-    wsManager.send({ connect: true });
-    set({ connected: true });
-  },
+      });
 
-  subscribe: (...ids) => {
-    wsManager.send({ subscribe: ids });
-  },
+      wsManager.send({ connect: true });
+    },
 
-  unsubscribe: (...ids) => {
-    wsManager.send({ unsubscribe: ids });
-  }
-}));
+    disconnect: () => {
+      unsubscribeSdo?.();
+      wsManager.disconnect();
+      set({ connected: false });
+    },
 
-export const useWSValue = (id: number) => {
-  return useWSStore((state) => state.values[id]);
-};
+    subscribe: (...ids: number[]) => {
+      wsManager.send({ subscribe: ids });
+    },
+
+    unsubscribe: (...ids: number[]) => {
+      wsManager.send({ unsubscribe: ids });
+    }
+
+  };
+});
+
+export const useWSValue = (id: number) =>
+  useWSStore((state) => state.values[id]);
