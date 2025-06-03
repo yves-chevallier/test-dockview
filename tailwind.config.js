@@ -9,8 +9,10 @@ export default {
         colors: {
             success: 'var(--success)',
             error: 'var(--destructive)',
+            scrollThumb: 'var(--color-card)',
+            scrollTrack: 'var(--color-destructive)',
         },
     },
   },
-  plugins: [],
+  plugins: [require('tailwind-scrollbar'),require("tailwindcss-animate"),],
 };

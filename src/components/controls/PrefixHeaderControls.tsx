@@ -21,7 +21,6 @@ export const PrefixHeaderControls = (props: IDockviewHeaderActionsProps) => {
                 color: 'var(--dv-activegroup-visiblepanel-tab-color)',
             }}
         >
-
                 <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Menu/>
@@ -29,8 +28,8 @@ export const PrefixHeaderControls = (props: IDockviewHeaderActionsProps) => {
       <DropdownMenuContent className="w-56" align="start">
         <DropdownMenuItem>Reload</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          Close
+        <DropdownMenuItem onSelect={() => props.group.api.close()}>
+          Close Group
           <DropdownMenuShortcut>⇧⌘W</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>

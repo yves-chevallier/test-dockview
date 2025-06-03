@@ -7,6 +7,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const LeftControls = (props: IDockviewHeaderActionsProps) => {
   const onClick = () => {
@@ -30,16 +38,20 @@ export const LeftControls = (props: IDockviewHeaderActionsProps) => {
         height: "100%",
       }}
     >
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Plus size={15} strokeWidth={2} onClick={onClick} />
-          </TooltipTrigger>
-          <TooltipContent side="top" sideOffset={4}>
-            Add Widget
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Plus size={15} strokeWidth={2} className="hover:text-green-500" />
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent className="w-56" align="start">
+          <DropdownMenuItem>Reload</DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            Close
+            <DropdownMenuShortcut>⇧⌘W</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };

@@ -1,26 +1,16 @@
 import {
-    DockviewDefaultTab,
     DockviewReact,
     DockviewReadyEvent,
-    IDockviewPanelHeaderProps,
     DockviewApi,
     IDockviewPanelProps,
-    IDockviewDefaultTabProps,
     DockviewTheme,
 } from 'dockview';
-import { MouseEvent, useEffect, useLayoutEffect, PointerEvent, useRef, useCallback, useState, createContext } from 'react';
-
-import './styles/app.scss';
+import { useEffect, useLayoutEffect, useState, createContext } from 'react';
 import { defaultConfig } from './defaultLayout';
-
 import { RightControls, LeftControls, PrefixHeaderControls } from './components/controls';
-import { X } from 'lucide-react';
-
-import DefaultPanel from './components/DefaultPanel';
-
 import { widgetRegistry } from './components/widgets';
-
 import { Tab} from './components/controls';
+import { RightBarProvider } from '@/components/RightBarContext';
 
 const ThemeContext = createContext<DockviewTheme | undefined>(undefined);
 
@@ -90,6 +80,7 @@ export default (props: { theme?: DockviewTheme }) => {
     };
 
     return (
+        <RightBarProvider>
         <div
             className="dockview-demo"
             style={{
@@ -114,5 +105,6 @@ export default (props: { theme?: DockviewTheme }) => {
                 />
             </ThemeContext.Provider>
         </div>
+        </RightBarProvider>
     );
 };

@@ -1,5 +1,24 @@
 @import "tailwindcss";
 
+@layer base {
+  h1 {
+    @apply scroll-m-20 text-4xl pb-4 font-extrabold tracking-tight text-balance;
+  }
+  h2 {
+    @apply scroll-m-20 border-b pb-4 text-3xl font-semibold tracking-tight first:mt-0;
+  }
+  h3 {
+    @apply scroll-m-20 text-2xl pb-4 font-semibold tracking-tight;
+  }
+  p {
+    @apply text-base leading-6 [&:not(:first-child)]:mt-5 mt-3 pb-3;
+  }
+
+  body {
+    @apply text-white;
+  }
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -118,6 +137,18 @@
   }
 }
 
-.text-error {
-  color: red !important;
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--sidebar-ring) var(--background);
+  margin-right: 4px;
+}
+.custom-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--sidebar-ring);
+  border-radius: 8px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+  background: var(--secondary);
 }
